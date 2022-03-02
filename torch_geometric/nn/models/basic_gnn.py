@@ -10,6 +10,7 @@ from torch_geometric.nn.conv import (GATConv, GCNConv, GINConv, MessagePassing,
                                      PNAConv, SAGEConv)
 from torch_geometric.nn.models import MLP
 from torch_geometric.nn.models.jumping_knowledge import JumpingKnowledge
+from torch_geometric.utils import filter_args
 from torch_geometric.typing import Adj
 
 
@@ -122,13 +123,13 @@ class BasicGNN(torch.nn.Module):
         """"""
         xs: List[Tensor] = []
         for i in range(self.num_layers):
-            x = self.convs[i](x, edge_index, *args, **kwargs)
+            x = filter_args(self.convs[i].forward)(x, edge_index, *args, **kwargs)
             if i == self.num_layers - 1 and self.jk_mode is None:
                 break
             if self.act_first:
                 x = self.act(x)
             if self.norms is not None:
-                x = self.norms[i](x)
+                x = filter_args(self.norms[i].forward)(x, **kwargs)
             if not self.act_first:
                 x = self.act(x)
             x = F.dropout(x, p=self.dropout, training=self.training)

@@ -1,3 +1,4 @@
+from .args import filter_args
 from .degree import degree
 from .softmax import softmax
 from .dropout import dropout_adj
@@ -33,6 +34,7 @@ from .metric import (accuracy, true_positive, true_negative, false_positive,
                      intersection_and_union, mean_iou)
 
 __all__ = [
+    'filter_args',
     'degree',
     'softmax',
     'dropout_adj',
